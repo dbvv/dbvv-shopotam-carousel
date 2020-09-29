@@ -2,7 +2,6 @@
 
 add_action("init", "dbvv_shopotam_carousel_register_post_types");
 function dbvv_shopotam_carousel_register_post_types() {
-	// Custom Post Type: name
 	$labels = array(
 		'name'                => _x( 'Shopotam carousel items', ' General Name', 'dbvv-shopotam-carousel' ),
 		'singular_name'       => _x( 'Shopotam carousel item', 'Shopotam carousel items Singular Name', 'dbvv-shopotam-carousel' ),
@@ -47,11 +46,12 @@ function crb_attach_theme_options() {
 	Container::make( 'post_meta', __( 'Urls' ) )
 		->where("post_type", "=", "shopotam")
 		->add_fields( array(
+			Field::make('text', 'utms', __("Utms")),
 			Field::make("complex", "urls", __("Product urls"))
 				->add_fields([
 					Field::make("text", "url", __("Shopotam product url")),
 				]),
-        ) );
+        ));
 }
 
 add_action( 'carbon_fields_post_meta_container_saved', 'crb_after_save_event' );
@@ -62,21 +62,31 @@ function crb_after_save_event( $post_id ) {
 
     $urls = carbon_get_post_meta( $post_id, 'urls' );
 	$content = '<div class="owl-theme-default owl-carousel shopotam-items-carousel">';
+	$utms = carbon_get_post_meta($post_id, 'utms');
 
 	foreach ($urls as $url) {
 		$parser = new Parser($url['url']);
 		if ($parser->parse()) {
 			$product = $parser->getParsedData();
+			$productLink = $product['url'];
+			if ($utms) {
+				$productLink .= "?$utms";
+			}
 			//$product = json_decode($data, true);
 			$content .= '<div class="shopotam-carousel-item">';
-			$content .= '<a href="' . $product['url'] . '">';
+			$content .= '<a href="' . $productLink . '">';
 			$content .= '<div class="img-wrapper">';
 			$content .= '<img src="' . $product['image'] . '"/>';
 			$content .= "</div>";
+			$content .= '<div class="item-brand">' . $product['brand'] . '</div>';
 			$content .= '<div class="item-title">' . $product["name"] . '</div>';
 			if (isset($product['offers']) && count($product['offers']) > 0) {
 				$offer = $product['offers'][0];
-				$content .= '<div class="item-price">' . $offer["price"] . ' ' . $offer['priceCurrency'] . '</div>';
+				$priceCurrency = $offer["priceCurrency"];
+				if ($priceCurrency == "RUB") {
+					$priceCurrency = "₽";
+				}
+				$content .= '<div class="item-price">' . $offer["price"] . $priceCurrency . '</div>';
 			}
 
 			$content .= "</a>";

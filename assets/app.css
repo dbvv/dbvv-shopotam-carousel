@@ -25,6 +25,15 @@
 	text-decoration: none;
 }
 
+.shopotam-carousel-item .item-brand {
+	font-size: 1rem;
+	font-weight: 700;
+	line-height: 1.375;
+	overflow: hidden;
+	white-space: nowrap;
+	color: #333;
+}
+
 .shopotam-carousel-item .item-price {
 	color: #333;
 	font-size: 1.25rem;
@@ -37,7 +46,7 @@
 }
 
 .shopotam-items-carousel .owl-stage {
-	margin-left: -50px;
+	margin-left: -10px;
 }
 
 .shopotam-items-carousel .owl-nav .owl-prev, .shopotam-items-carousel .owl-nav .owl-next {

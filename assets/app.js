@@ -12,9 +12,9 @@
 				},
 				576: {
 					items: 3,
+					stagePadding: 50,
 				},
 				768: {
-					stagePadding: 50,
 					items: 4,
 				},
 				1024: {
