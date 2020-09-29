@@ -1,0 +1,13 @@
+{
+    "name": "dbvv/dbvv-shopotam-carousel",
+    "description": "Shopotam carousel",
+    "require": {
+        "htmlburger/carbon-fields": "^3.1"
+    },
+    "authors": [
+        {
+            "name": "Daniil Borovkov",
+            "email": "daniilborowkow@gmail.com"
+        }
+    ]
+}
