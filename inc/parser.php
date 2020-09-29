@@ -21,6 +21,7 @@ class Parser {
 		}
 
 		$this->parsedData = json_decode($meta[0]->innertext, true);
+		return true;
 
 	}
 

@@ -54,4 +54,42 @@ function crb_attach_theme_options() {
         ) );
 }
 
+add_action( 'carbon_fields_post_meta_container_saved', 'crb_after_save_event' );
+function crb_after_save_event( $post_id ) {
+    if ( get_post_type( $post_id ) !== "shopotam" ) {
+        return false;
+    }
+
+    $urls = carbon_get_post_meta( $post_id, 'urls' );
+	$content = '<div class="owl-carousel shopotam-items-carousel">';
+
+	foreach ($urls as $url) {
+		$parser = new Parser($url['url']);
+		if ($parser->parse()) {
+			$product = $parser->getParsedData();
+			//$product = json_decode($data, true);
+			$content .= '<div class="owl-item shopotam-carousel-item">';
+			$content .= '<a href="' . $product['url'] . '">';
+			$content .= '<img src="' . $product['image'] . '"/>';
+			$content .= '<div class="item-title">' . $product["name"] . '</div>';
+			if (isset($product['offers']) && count($product['offers']) > 0) {
+				$offer = $product['offers'][0];
+				$content .= '<div class="item-price">' . $offer["price"] . ' ' . $offer['priceCurrency'] . '</div>';
+			}
+
+			$content .= "</a>";
+
+			$content .= '</div>'; // end owl-iem
+		} else {
+			// notify about wrong url
+		}
+
+	}
+
+	$content .= '</div> <!-=- end .shopotam-items-carousel -->';
+	wp_update_post([
+		'id' => $post_id,
+		'post_content' => $content,
+	]);
+}
 
