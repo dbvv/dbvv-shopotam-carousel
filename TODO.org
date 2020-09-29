@@ -1,6 +1,6 @@
 2020-09-29
 * DONE create custom post type with carousel - save meta as links, carousel in content
-* TODO create product pageparser
+* DONE create product pageparser
 * TODO create shortcode with carousel and metabox to select it
 * TODO add styling for carousel
 * TODO add gutenberg button to select from existing carousels
