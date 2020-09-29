@@ -61,16 +61,18 @@ function crb_after_save_event( $post_id ) {
     }
 
     $urls = carbon_get_post_meta( $post_id, 'urls' );
-	$content = '<div class="owl-carousel shopotam-items-carousel">';
+	$content = '<div class="owl-theme-default owl-carousel shopotam-items-carousel">';
 
 	foreach ($urls as $url) {
 		$parser = new Parser($url['url']);
 		if ($parser->parse()) {
 			$product = $parser->getParsedData();
 			//$product = json_decode($data, true);
-			$content .= '<div class="owl-item shopotam-carousel-item">';
+			$content .= '<div class="shopotam-carousel-item">';
 			$content .= '<a href="' . $product['url'] . '">';
+			$content .= '<div class="img-wrapper">';
 			$content .= '<img src="' . $product['image'] . '"/>';
+			$content .= "</div>";
 			$content .= '<div class="item-title">' . $product["name"] . '</div>';
 			if (isset($product['offers']) && count($product['offers']) > 0) {
 				$offer = $product['offers'][0];

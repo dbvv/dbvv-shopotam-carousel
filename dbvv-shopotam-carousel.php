@@ -23,3 +23,13 @@ function crb_load() {
     \Carbon_Fields\Carbon_Fields::boot();
 }
 
+
+add_action("wp_enqueue_scripts", "dbvv_shopotam_carousel_scripts");
+function dbvv_shopotam_carousel_scripts() {
+	wp_enqueue_script('owl-carousel', plugin_dir_url(__FILE__) . 'assets/owl.carousel.min.js', ['jquery']);
+	wp_enqueue_script('shopotam-carousel', plugin_dir_url(__FILE__) . 'assets/app.js', ['jquery', "owl-carousel"]);
+
+	wp_enqueue_style("owl-carousel", plugin_dir_url(__FILE__) . 'assets/owl.carousel.min.css');
+	wp_enqueue_style('owl-carousel-theme', plugin_dir_url(__FILE__) . 'assets/owl.theme.default.css');
+	wp_enqueue_style('shopotam-carousel-style', plugin_dir_url(__FILE__) . 'assets/app.css', ['owl-carousel', 'owl-carousel-theme']);
+}

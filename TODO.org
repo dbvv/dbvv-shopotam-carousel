@@ -3,6 +3,7 @@
 * DONE create product pageparser
 * DONE edit cpt content on save
 * DONE create shortcode with carousel and metabox to select it
-* TODO add styling for carousel
+* DONE add styling for carousel
+* TODO add utms field and utms generation. Brand and price formatted output
 * TODO add gutenberg button to select from existing carousels
 * TODO add metabox with gallery preview on single post editing
