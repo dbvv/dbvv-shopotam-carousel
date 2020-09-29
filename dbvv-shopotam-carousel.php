@@ -15,6 +15,7 @@
 // Your code starts here.
 require plugin_dir_path(__FILE__) . "inc/parser.php";
 require plugin_dir_path(__FILE__) . "inc/cpt.php";
+require plugin_dir_path(__FILE__) . "inc/shortcode.php";
 
 add_action( 'after_setup_theme', 'crb_load' );
 function crb_load() {

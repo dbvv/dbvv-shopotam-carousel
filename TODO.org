@@ -2,7 +2,7 @@
 * DONE create custom post type with carousel - save meta as links, carousel in content
 * DONE create product pageparser
 * DONE edit cpt content on save
-* TODO create shortcode with carousel and metabox to select it
+* DONE create shortcode with carousel and metabox to select it
 * TODO add styling for carousel
 * TODO add gutenberg button to select from existing carousels
 * TODO add metabox with gallery preview on single post editing

@@ -93,3 +93,17 @@ function crb_after_save_event( $post_id ) {
 	]);
 }
 
+
+// metabox with shortcode
+## Добавляем блоки в основную колонку на страницах постов и пост. страниц
+add_action('add_meta_boxes', 'dbvv_shopotam_carousel_add_custom_box');
+function dbvv_shopotam_carousel_add_custom_box(){
+	$screens = array( 'shopotam' );
+	add_meta_box( 'dbvv_shopotam_carousel_sectionid', __('Shortcode'), 'dbvv_shopotam_carousel_meta_box_callback', $screens );
+}
+
+// HTML код блока
+function dbvv_shopotam_carousel_meta_box_callback( $post, $meta ){
+	$screens = $meta['args'];
+	echo "[shopotam-carousel id={$post->ID}]";
+}
