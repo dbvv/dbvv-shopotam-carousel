@@ -31,5 +31,5 @@ function dbvv_shopotam_carousel_scripts() {
 
 	wp_enqueue_style("owl-carousel", plugin_dir_url(__FILE__) . 'assets/owl.carousel.min.css');
 	wp_enqueue_style('owl-carousel-theme', plugin_dir_url(__FILE__) . 'assets/owl.theme.default.css');
-	wp_enqueue_style('shopotam-carousel-style', plugin_dir_url(__FILE__) . 'assets/app.css', ['owl-carousel', 'owl-carousel-theme']);
+	wp_enqueue_style('shopotam-carousel-style', plugin_dir_url(__FILE__) . 'assets/app.css', ['owl-carousel', 'owl-carousel-theme'], '0.1.0');
 }

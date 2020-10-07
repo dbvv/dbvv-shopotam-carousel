@@ -86,7 +86,8 @@ function crb_after_save_event( $post_id ) {
 				if ($priceCurrency == "RUB") {
 					$priceCurrency = "₽";
 				}
-				$content .= '<div class="item-price">' . $offer["price"] . $priceCurrency . '</div>';
+				$price = number_format($offer['price'], 0, ',', ' ');
+				$content .= '<div class="item-price">' . "$price $priceCurrency" . '</div>';
 			}
 
 			$content .= "</a>";
