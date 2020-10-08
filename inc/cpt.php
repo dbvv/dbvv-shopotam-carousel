@@ -74,7 +74,7 @@ function crb_after_save_event( $post_id ) {
 			}
 			//$product = json_decode($data, true);
 			$content .= '<div class="shopotam-carousel-item">';
-			$content .= '<a href="' . $productLink . '">';
+			$content .= '<a target="blank" href="' . $productLink . '">';
 			$content .= '<div class="img-wrapper">';
 			$content .= '<img src="' . $product['image'] . '"/>';
 			$content .= "</div>";

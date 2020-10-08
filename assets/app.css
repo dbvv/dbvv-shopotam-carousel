@@ -69,6 +69,8 @@
 	background-size: 18px 28px !important;
 	background-position: 50% !important;
 	opacity: 0.8;
+	outline: none;
+	box-shadow: none;
 }
 
 .shopotam-items-carousel .owl-nav .owl-prev:hover, .shopotam-items-carousel .owl-nav .owl-next:hover {
