@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
 .shopotam-carousel-item, .shopotam-carousel-item * {
 	font-family: 'PT Sans', sans-serif;
 }
@@ -44,18 +44,31 @@
 .shopotam-carousel-item .item-price {
 	color: #333;
 	font-size: 1.25rem;
-	font-weight: 300;
+	font-weight: 400;
 	line-height: 2.7;
+	margin-top: 0.5rem;
+}
+.shopotam-carousel-item .item-price span.new-price {
+	color: #81b02e;
+	margin-right: 0.625rem;
+	white-space: nowrap;
+	font-size: 1.25rem;
+	line-height: 1.3rem;
+	font-weight: 600;
+}
+
+.shopotam-carousel-item .item-price span.old-price {
+	color:#7b7b7b;
+	font-size: 1rem;
+	line-height: 1.375rem;
+	text-decoration: line-through;
 }
 
 .shopotam-carousel-item:hover .img-wrapper:after {
 	opacity: 0;
 }
 
-.shopotam-items-carousel .owl-stage {
-	margin-left: -10px;
-	padding-left: 0px !important;
-}
+
 
 .shopotam-items-carousel .owl-nav .owl-prev, .shopotam-items-carousel .owl-nav .owl-next {
 	position: absolute;
@@ -92,6 +105,17 @@
 	.shopotam-carousel-item {
 		padding: 15px;
 	}
+	.shopotam-items-carousel .owl-stage {
+		margin-left: -10px;
+		padding-left: 0px !important;
+	}
 }
 
-
+@media screen and (max-width: 576px) {
+	.shopotam-carousel-item {
+		padding: 7px;
+	}
+	.shopotam-items-carousel .owl-stage {
+		padding-left: 0px !important;
+	}
+}

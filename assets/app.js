@@ -8,11 +8,14 @@
 			loop: true,
 			responsive: {
 				0: {
-					items: 1,
+					items: 2,
+					stagePadding: 20,
+					nav: false,
 				},
 				576: {
 					items: 3,
 					stagePadding: 50,
+					nav: true,
 				},
 				//768: {
 					//items: 4,

@@ -12,7 +12,6 @@ class Parser {
 
 	public function parse() {
 		$str = file_get_contents($this->url);
-		//echo $str;
 		$dom = HtmlDomParser::str_get_html( $str );
 		$meta = $dom->find('[type="application/ld+json"]');
 
@@ -21,10 +20,15 @@ class Parser {
 		}
 
 		$this->parsedData = json_decode($meta[0]->innertext, true);
-		$orderForm = $dom->find('#order-form');
-		$dataVariations = $orderForm->atts['data-variations'];
-		$originalPrice = 11;
-		$this->parsedData['originalPrice'] = $originalPrice;
+		$orderForm = $dom->find('[id="order-form"]')[0];
+		$dataVariations = $orderForm->attr['data-variations'];
+		$data = json_decode(htmlspecialchars_decode($dataVariations), true);
+		if (isset($data['combinations']) && count($data['combinations']) > 0) {
+			$combination = $data['combinations'][0];
+			if (isset($combination['price_old_formatted'])) {
+				$this->parsedData['originalPrice'] = $combination['price_old_formatted'];
+			}
+		}
 		return true;
 
 	}

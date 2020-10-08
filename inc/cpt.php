@@ -87,7 +87,12 @@ function crb_after_save_event( $post_id ) {
 					$priceCurrency = "₽";
 				}
 				$price = number_format($offer['price'], 0, ',', ' ');
-				$content .= '<div class="item-price">' . "$price $priceCurrency" . '</div>';
+				if (isset($product['originalPrice'])) {
+					$originalPrice = $product['originalPrice'] . " $priceCurrency";
+					$content .= sprintf('<div class="item-price"><span class="new-price">%s %s</span><span class="old-price">%s</span></div>', $price, $priceCurrency, $originalPrice);
+				} else {
+					$content .= '<div class="item-price">' . "$price $priceCurrency" . '</div>';
+				}
 			}
 
 			$content .= "</a>";
