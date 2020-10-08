@@ -21,6 +21,10 @@ class Parser {
 		}
 
 		$this->parsedData = json_decode($meta[0]->innertext, true);
+		$orderForm = $dom->find('#order-form');
+		$dataVariations = $orderForm->atts['data-variations'];
+		$originalPrice = 11;
+		$this->parsedData['originalPrice'] = $originalPrice;
 		return true;
 
 	}
