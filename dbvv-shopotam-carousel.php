@@ -33,3 +33,23 @@ function dbvv_shopotam_carousel_scripts() {
 	wp_enqueue_style('owl-carousel-theme', plugin_dir_url(__FILE__) . 'assets/owl.theme.default.css');
 	wp_enqueue_style('shopotam-carousel-style', plugin_dir_url(__FILE__) . 'assets/app.css', ['owl-carousel', 'owl-carousel-theme'], '0.1.1');
 }
+
+function gutenberg_shopotam_carousel_register_block() {
+
+	wp_register_script(
+		'gutenberg-shopotam-carousel',
+		plugin_dir_url(__FILE__) . 'assets/block.js',
+		[
+			'wp-blocks', 'wp-element', 'wp-editor'
+		],
+		'0.0.1'
+	);
+
+	register_block_type( 'shopotam/shopotam-carousel', array(
+		'editor_script' => 'gutenberg-shopotam-carousel',
+	));
+
+
+}
+add_action( 'init', 'gutenberg_shopotam_carousel_register_block'  );
+

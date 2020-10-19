@@ -43,8 +43,37 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
+
+		browserify: {
+			development: {
+				src: [
+					'js/block.js',
+				],
+				dest: './assets/block.js',
+				options: {
+					browserifyOptions: {
+						debug: true,
+						transform: [
+							['babelify', {
+								presets: [
+									[
+										"@babel/preset-react",
+										{
+										}
+
+									],
+									["@babel/preset-env"],
+								]
+							}]
+						]
+					}
+				}
+			}
+
+		},
 	} );
 
+	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks( 'grunt-wp-i18n' );
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
 	grunt.registerTask( 'default', [ 'i18n','readme' ] );
