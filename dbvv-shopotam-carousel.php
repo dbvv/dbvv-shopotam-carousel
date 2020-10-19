@@ -40,7 +40,7 @@ function gutenberg_shopotam_carousel_register_block() {
 		'gutenberg-shopotam-carousel',
 		plugin_dir_url(__FILE__) . 'assets/block.js',
 		[
-			'wp-blocks', 'wp-element', 'wp-editor'
+			'wp-blocks', 'wp-element', 'wp-editor', 'wp-components'
 		],
 		'0.0.1'
 	);
