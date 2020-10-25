@@ -61,7 +61,7 @@ function crb_after_save_event( $post_id ) {
     }
 
     $urls = carbon_get_post_meta( $post_id, 'urls' );
-	$content = '<div class="owl-theme-default owl-carousel shopotam-items-carousel">';
+	$content = '<div data-id="' . $post_id . '"  class="owl-theme-default owl-carousel shopotam-items-carousel">';
 	$utms = carbon_get_post_meta($post_id, 'utms');
 
 	foreach ($urls as $url) {
