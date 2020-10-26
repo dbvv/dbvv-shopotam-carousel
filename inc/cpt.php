@@ -35,8 +35,7 @@ function dbvv_shopotam_carousel_register_post_types() {
 		'publicly_queryable'  => true,
 		'capability_type'     => 'post',
 	);
-	register_post_type( 'shopotam', $args );
-}
+	register_post_type( 'shopotam', $args ); }
 
 use Carbon_Fields\Container;
 use Carbon_Fields\Field;
@@ -54,13 +53,8 @@ function crb_attach_theme_options() {
         ));
 }
 
-add_action( 'carbon_fields_post_meta_container_saved', 'crb_after_save_event' );
-function crb_after_save_event( $post_id ) {
-    if ( get_post_type( $post_id ) !== "shopotam" ) {
-        return false;
-    }
-
-    $urls = carbon_get_post_meta( $post_id, 'urls' );
+function generate_shopotam_carousel_post_content($post_id) {
+	$urls = carbon_get_post_meta( $post_id, 'urls' );
 	$content = '<div data-id="' . $post_id . '"  class="owl-theme-default owl-carousel shopotam-items-carousel">';
 	$utms = carbon_get_post_meta($post_id, 'utms');
 
@@ -105,8 +99,17 @@ function crb_after_save_event( $post_id ) {
 	}
 
 	$content .= '</div> <!-=- end .shopotam-items-carousel -->';
+	return $content;
+}
+
+add_action( 'carbon_fields_post_meta_container_saved', 'crb_after_save_event' );
+function crb_after_save_event( $post_id ) {
+	if ( get_post_type( $post_id ) !== "shopotam" ) {
+        return false;
+    }
+	$content = generate_shopotam_carousel_post_content($post_id);
 	wp_update_post([
-		'id' => $post_id,
+		'ID' => $post_id,
 		'post_content' => $content,
 	]);
 }

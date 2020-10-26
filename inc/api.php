@@ -36,8 +36,62 @@ function gsc_get_carousels($request) {
 	return $response;
 }
 
-function gsc_carousel_create($request) {}
-function gsc_carousel_update($request) {}
+function gsc_carousel_create($request) {
+	$data = $request->get_params();
+
+	$post_args = [
+		'post_title' => $data['title'],
+		'post_status' => 'publish',
+		'post_type' => 'shopotam',
+	];
+	$post_id = wp_insert_post($post_args);
+
+	$urls = [];
+	foreach ($data['urls'] as $url) {
+		$urls[] = [
+			'url' => $url,
+		];
+	}
+
+	carbon_set_post_meta($post_id, 'urls', $urls);
+	$content = generate_shopotam_carousel_post_content($post_id);
+	$edited = wp_update_post([
+		'ID' => $post_id,
+		'post_content' => $content,
+	], true);
+	return [
+		'post_id' => $post_id,
+		'error' => $edited,
+	];
+}
+function gsc_carousel_update($request) {
+	$data = $request->get_params();
+
+	$post_args = [
+		'ID' => $data['ID'],
+		'post_title' => $data['title'],
+		'post_type' => 'shopotam',
+	];
+	$post_id = wp_update_post($post_args);
+
+	$urls = [];
+	foreach ($data['urls'] as $url) {
+		$urls[] = [
+			'url' => $url,
+		];
+	}
+
+	carbon_set_post_meta($post_id, 'urls', $urls);
+	$content = generate_shopotam_carousel_post_content($post_id);
+	$edited = wp_update_post([
+		'ID' => $post_id,
+		'post_content' => $content,
+	], true);
+	return [
+		'post_id' => $post_id,
+		'error' => $edited,
+	];
+}
 
 function gsc_carousel_get($request) {
 	$id = $request->get_param('id');
