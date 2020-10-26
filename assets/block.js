@@ -105,7 +105,7 @@
 
 			var CarouselsSelect = function () {
 				var value = carousels.find(function (option) {
-					return option.key === props.attributes.carouselID;
+					return option.key === parseInt(props.attributes.carouselID);
 				})
 				return el(CustomSelectControl, {
 					label: 'select carousel',
