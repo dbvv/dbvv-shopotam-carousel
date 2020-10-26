@@ -10,11 +10,13 @@
 	}
 
 	var InspectorControls = editor.InspectorControls;
+	var InnerBlocks = editor.InnerBlocks;
 
 	var Button = components.Button;
 	var CustomSelectControl = components.CustomSelectControl;
 	var Disabled = components.Disabled;
 	var InputControl = components.TextControl;
+	var Modal = components.Modal;
 	var PanelBody = components.PanelBody;
 	var PanelRow = components.PanelRow;
 
@@ -50,6 +52,17 @@
 				selector: '.shopotam-items-carousel',
 				attribute: 'data-id',
 			},
+			isOpenEditModal: {
+				type: 'boolean',
+				default: false,
+			},
+			urls: {
+				type: 'array',
+				default: [
+					'sss',
+					'urls',
+				],
+			},
 		},
 		edit: function (props) {
 			var content = props.attributes.content;
@@ -79,6 +92,9 @@
 
 			function onButtonClick() {
 				console.log('Button clicked');
+				props.setAttributes({
+					isOpenEditModal: true,
+				});
 			}
 
 			function carouselReinit() {
@@ -115,19 +131,68 @@
 				});
 			};
 
+			function editModalContent(ID = null, post_title = '', urls = []) {
+
+
+			}
+
+			function UrlsList(urls = []) {
+				var els = [];
+				var onUrlChange = function (e) {
+					console.log('url_changed', e);
+				}
+				for (var i = 0; i < urls.length; i++) {
+					els.push(el(
+						RichText,
+						{
+							onChange: onUrlChange,
+							value: urls[i],
+							className: 'url',
+							blockStyle: {
+								border: '1px solid black',
+								marginBottom: '10px',
+							},
+						}
+					));
+				}
+				return els;
+			}
+
+			function onEditModalRequestClose () {
+				props.setAttributes({
+					isOpenEditModal: false,
+				});
+			}
+
+			var EditModal = function () {
+				console.log('isOpenEditModal', props.attributes.isOpenEditModal);
+				if (props.attributes.isOpenEditModal) {
+					return el(Modal, {
+						title: 'Редактировать',
+						onRequestClose: onEditModalRequestClose,
+					}, [
+						el(RichText, {
+							value: 'text',
+						}, 	UrlsList(props.attributes.urls)),
+
+
+
+					]);
+				}
+			}
+
 			setTimeout(carouselReinit, 2000);
 
 			return [
-				//el(Disabled, null, [
-					el(RichText, {
-						className: props.className,
-						onChange: carouselReinit,
-						dangerouslySetInnerHTML:  html(props.attributes.content),
-						value: props.attributes.content,
-						disabled: true,
-						formattingControls: [],
-					}),
-				//]),
+				el(RichText, {
+					className: props.className,
+					onChange: carouselReinit,
+					dangerouslySetInnerHTML:  html(props.attributes.content),
+					value: props.attributes.content,
+					disabled: true,
+					formattingControls: [],
+				}),
+				EditModal(),
 
 				el(Button, {
 					isPrimary: true,
