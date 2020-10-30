@@ -58,15 +58,31 @@
 			},
 			urls: {
 				type: 'array',
+				selector: 'a',
+				source: 'query',
+				query: {
+					url : {
+						type: 'string',
+						attribute: 'href',
+						source: 'attribute',
+
+					}
+				},
 				default: [
-					'sss',
-					'urls',
 				],
 			},
+			urlsChanged: {
+				type: 'string',
+				default: Date.now(),
+			},
+		},
+		componentDidUpdate: function (prevProps) {
+			console.log(prevProps);
 		},
 		edit: function (props) {
 			var content = props.attributes.content;
 			var carouselItems = props.attributes.carouselItems;
+			console.log('props', props)
 
 			function onChangeContent(newContent) {
 				props.setAttributes({
@@ -91,7 +107,6 @@
 			}
 
 			function onButtonClick() {
-				console.log('Button clicked');
 				props.setAttributes({
 					isOpenEditModal: true,
 				});
@@ -131,51 +146,70 @@
 				});
 			};
 
-			function editModalContent(ID = null, post_title = '', urls = []) {
-
-
-			}
-
-			function UrlsList(urls = []) {
-				var els = [];
-				var onUrlChange = function (e) {
-					console.log('url_changed', e);
-				}
-				for (var i = 0; i < urls.length; i++) {
-					els.push(el(
-						RichText,
-						{
-							onChange: onUrlChange,
-							value: urls[i],
-							className: 'url',
-							blockStyle: {
-								border: '1px solid black',
-								marginBottom: '10px',
-							},
-						}
-					));
-				}
-				return els;
-			}
-
 			function onEditModalRequestClose () {
 				props.setAttributes({
 					isOpenEditModal: false,
 				});
 			}
 
-			var EditModal = function () {
-				console.log('isOpenEditModal', props.attributes.isOpenEditModal);
+			function UrlsList(urls = []) {
+				return urls.map(function (itemLabel, id) {
+					return el('li', {
+						id: id
+					}, el(RichText, {
+						value: itemLabel.url,
+						style: {
+							padding: '5px',
+							border: '1px solid black',
+							marginBottom: '5px',
+						},
+						onChange: function (newValue) {
+							let urls = props.attributes.urls;
+							urls[id].url = newValue;
+							props.setAttributes({
+								urls: urls,
+							})
+						}
+					}));
+				});
+			}
+
+			var EditModal = function (urlsList = []) {
 				if (props.attributes.isOpenEditModal) {
+					console.log('urls_init', urlsList);
 					return el(Modal, {
 						title: 'Редактировать',
 						onRequestClose: onEditModalRequestClose,
 					}, [
 						el(RichText, {
 							value: 'text',
-						}, 	UrlsList(props.attributes.urls)),
+							onChange: function (e) {
+								console.log('e', e)
+							}
+						}),
+						el('ol', null, [
+							UrlsList(urlsList),
+							el(Button, {
+								onClick: function () {
+									//var urls = props.attributes.urls;
+									var urls = urlsList;
+									urls.push('');
+									props.setAttributes({
+										urls: [],
+									});
+									props.setAttributes({
+										urls: urls,
+									});
+								},
+							}, 'Добавить ссылку'),
+						el(Button, {
+							isPrimary: true,
+							onClick: function () {
+								console.log('urls', props.attributes.urls)
+							},
+						}, 'Сохранить'),
 
-
+					  ])
 
 					]);
 				}
@@ -192,7 +226,7 @@
 					disabled: true,
 					formattingControls: [],
 				}),
-				EditModal(),
+				EditModal(props.attributes.urls),
 
 				el(Button, {
 					isPrimary: true,
