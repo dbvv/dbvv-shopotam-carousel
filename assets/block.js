@@ -14,7 +14,9 @@
 
 	var Button = components.Button;
 	var CustomSelectControl = components.CustomSelectControl;
+	var Dashicon = components.Dashicon;
 	var Disabled = components.Disabled;
+	var Draggable = components.Draggable;
 	var InputControl = components.TextControl;
 	var Modal = components.Modal;
 	var PanelBody = components.PanelBody;
@@ -153,24 +155,67 @@
 			}
 
 			function UrlsList(urls = []) {
+				function onDragStart(e) {
+					console.log('e', e);
+				}
+				function onDragEnd(e) {
+					console.log('end', e)
+				}
+
 				return urls.map(function (itemLabel, id) {
-					return el('li', {
-						id: id
-					}, el(RichText, {
-						value: itemLabel.url,
-						style: {
-							padding: '5px',
-							border: '1px solid black',
-							marginBottom: '5px',
-						},
-						onChange: function (newValue) {
-							let urls = props.attributes.urls;
-							urls[id].url = newValue;
-							props.setAttributes({
-								urls: urls,
-							})
-						}
-					}));
+					return el(Draggable, {
+						elementId: 'data-' + id,
+						onDragStart: onDragStart,
+						onDragEnd: onDragEnd,
+						transferData: {},
+					}, function (onDraggableStart, onDraggableEnd) {
+
+						return el('li', {
+							id: id,
+							draggable: true,
+							//onDragStart: onDraggableStart,
+							//onDragEnd: onDraggableEnd,
+							style: {
+								display: 'flex',
+							}
+						}, [
+							el(Dashicon, {
+								icon: 'move',
+								//draggable: true,
+							}),
+							el(RichText, {
+								value: itemLabel.url,
+								style: {
+									padding: '5px',
+									border: '1px solid black',
+									marginBottom: '5px',
+									width: '100%',
+								},
+								onChange: function (newValue) {
+									let urls = props.attributes.urls;
+									urls[id].url = newValue;
+									props.setAttributes({
+										urls: urls,
+									});
+								}
+							}),
+							el(Button, {
+								onClick: function () {
+									if (id > -1) {
+										let urls = props.attributes.urls;
+										urls.splice(id, 1);
+										props.setAttributes({
+											urls: [],
+										});
+										props.setAttributes({
+											urls: urls,
+										})
+									}
+								}
+							}, el(Dashicon, {icon: 'trash'}))
+						])
+					} )
+					;
 				});
 			}
 
@@ -187,30 +232,29 @@
 								console.log('e', e)
 							}
 						}),
-						el('ol', null, [
+						el('ol', null,
 							UrlsList(urlsList),
-							el(Button, {
-								onClick: function () {
-									//var urls = props.attributes.urls;
-									var urls = urlsList;
-									urls.push('');
-									props.setAttributes({
-										urls: [],
-									});
-									props.setAttributes({
-										urls: urls,
-									});
-								},
-							}, 'Добавить ссылку'),
+
+						),
+						el(Button, {
+							onClick: function () {
+								//var urls = props.attributes.urls;
+								var urls = urlsList;
+								urls.push({url: ''});
+								props.setAttributes({
+									urls: [],
+								});
+								props.setAttributes({
+									urls: urls,
+								});
+							},
+						}, 'Добавить ссылку'),
 						el(Button, {
 							isPrimary: true,
 							onClick: function () {
 								console.log('urls', props.attributes.urls)
 							},
 						}, 'Сохранить'),
-
-					  ])
-
 					]);
 				}
 			}
