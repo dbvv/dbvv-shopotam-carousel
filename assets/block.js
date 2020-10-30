@@ -115,6 +115,7 @@
 			}
 
 			function carouselReinit() {
+				console.log('carousel reinit');
 				$(".shopotam-items-carousel").owlCarousel({
 					nav: true,
 					navText: ['', ''],
@@ -179,10 +180,10 @@
 								display: 'flex',
 							}
 						}, [
-							el(Dashicon, {
-								icon: 'move',
-								//draggable: true,
-							}),
+							//el(Dashicon, {
+								//icon: 'move',
+								////draggable: true,
+							//}),
 							el(RichText, {
 								value: itemLabel.url,
 								style: {
@@ -220,6 +221,30 @@
 			}
 
 			var EditModal = function (urlsList = []) {
+				function onChangeCarouselReinit() {
+					setTimeout(function () {
+						$(".shopotam-items-carousel").owlCarousel({
+							nav: true,
+							navText: ['', ''],
+							dots: false,
+							items: 3,
+							loop: true,
+							responsive: {
+								0: {
+									items: 2,
+									stagePadding: 20,
+									nav: false,
+								},
+								576: {
+									items: 3,
+									stagePadding: 50,
+									nav: true,
+								},
+							}
+						});
+						console.log($(".shopotam-items-carousel"))
+					}, 3000);
+				}
 				if (props.attributes.isOpenEditModal) {
 					console.log('urls_init', urlsList);
 					return el(Modal, {
@@ -253,6 +278,41 @@
 							isPrimary: true,
 							onClick: function () {
 								console.log('urls', props.attributes.urls)
+								var urls = [];
+								props.attributes.urls.forEach(function (item) {
+									urls.push(item.url);
+								});
+								$.ajax({
+									url: window.gsc.rest.carouselUpdate,
+									method: 'POST',
+									data: {
+										urls: urls,
+										title: 'Test title',
+										ID: props.attributes.carouselID,
+									},
+									success: function (response) {
+										$.ajax({
+											url: window.gsc.rest.carouselGet,
+											method: 'POST',
+											data: {
+												id: props.attributes.carouselID,
+											},
+											success: function (data) {
+												props.setAttributes({
+													content: '',
+												});
+												props.setAttributes({
+													content: data.content,
+												});
+												onChangeCarouselReinit();
+												props.setAttributes({
+													isOpenEditModal: false,
+												});
+											},
+										});
+
+									}
+								})
 							},
 						}, 'Сохранить'),
 					]);
@@ -264,7 +324,7 @@
 			return [
 				el(RichText, {
 					className: props.className,
-					onChange: carouselReinit,
+					//onChange: carouselReinit,
 					dangerouslySetInnerHTML:  html(props.attributes.content),
 					value: props.attributes.content,
 					disabled: true,
