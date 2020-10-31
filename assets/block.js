@@ -221,30 +221,6 @@
 			}
 
 			var EditModal = function (urlsList = []) {
-				function onChangeCarouselReinit() {
-					setTimeout(function () {
-						$(".shopotam-items-carousel").owlCarousel({
-							nav: true,
-							navText: ['', ''],
-							dots: false,
-							items: 3,
-							loop: true,
-							responsive: {
-								0: {
-									items: 2,
-									stagePadding: 20,
-									nav: false,
-								},
-								576: {
-									items: 3,
-									stagePadding: 50,
-									nav: true,
-								},
-							}
-						});
-						console.log($(".shopotam-items-carousel"))
-					}, 3000);
-				}
 				if (props.attributes.isOpenEditModal) {
 					console.log('urls_init', urlsList);
 					return el(Modal, {
