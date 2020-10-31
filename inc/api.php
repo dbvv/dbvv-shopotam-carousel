@@ -71,6 +71,7 @@ function gsc_carousel_update($request) {
 		'ID' => $data['ID'],
 		'post_title' => $data['title'],
 		'post_type' => 'shopotam',
+		'post_status' => 'publish',
 	];
 	$post_id = wp_update_post($post_args);
 

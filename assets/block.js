@@ -53,6 +53,13 @@
 				source: 'attribute',
 				selector: '.shopotam-items-carousel',
 				attribute: 'data-id',
+				default: null,
+			},
+			carouselTitle: {
+				type: 'string',
+				source: 'attribute',
+				selector: '.shopotam-items-carousel',
+				attribute: 'data-title',
 			},
 			isOpenEditModal: {
 				type: 'boolean',
@@ -67,15 +74,14 @@
 						type: 'string',
 						attribute: 'href',
 						source: 'attribute',
-
-					}
+					},
 				},
 				default: [
 				],
 			},
-			urlsChanged: {
-				type: 'string',
-				default: Date.now(),
+			isRequesting: {
+				type: 'boolean',
+				default: false,
 			},
 		},
 		componentDidUpdate: function (prevProps) {
@@ -84,7 +90,12 @@
 		edit: function (props) {
 			var content = props.attributes.content;
 			var carouselItems = props.attributes.carouselItems;
-			console.log('props', props)
+
+			function isRequesting(bool) {
+				props.setAttributes({
+					isRequesting: bool,
+				});
+			}
 
 			function onChangeContent(newContent) {
 				props.setAttributes({
@@ -93,6 +104,8 @@
 			}
 
 			function onChangeCarouselSelect(e) {
+				isRequesting(true);
+
 				$.ajax({
 					url: window.gsc.rest.carouselGet,
 					method: 'POST',
@@ -103,6 +116,7 @@
 						props.setAttributes({
 							content: data.content,
 						});
+						isRequesting(false);
 						setTimeout(carouselReinit, 1000);
 					},
 				});
@@ -115,7 +129,6 @@
 			}
 
 			function carouselReinit() {
-				console.log('carousel reinit');
 				$(".shopotam-items-carousel").owlCarousel({
 					nav: true,
 					navText: ['', ''],
@@ -157,10 +170,8 @@
 
 			function UrlsList(urls = []) {
 				function onDragStart(e) {
-					console.log('e', e);
 				}
 				function onDragEnd(e) {
-					console.log('end', e)
 				}
 
 				return urls.map(function (itemLabel, id) {
@@ -221,25 +232,26 @@
 			}
 
 			var EditModal = function (urlsList = []) {
+				var editText = props.attributes.carouselID ? 'Редактировать' : 'Создать';
 				if (props.attributes.isOpenEditModal) {
-					console.log('urls_init', urlsList);
 					return el(Modal, {
-						title: 'Редактировать',
+						title: editText,
 						onRequestClose: onEditModalRequestClose,
 					}, [
 						el(RichText, {
-							value: 'text',
+							value: props.attributes.carouselTitle,
+							placeholder: 'Заголовок',
 							onChange: function (e) {
-								console.log('e', e)
+								props.setAttributes({
+									carouselTitle: e
+								});
 							}
 						}),
 						el('ol', null,
 							UrlsList(urlsList),
-
 						),
 						el(Button, {
 							onClick: function () {
-								//var urls = props.attributes.urls;
 								var urls = urlsList;
 								urls.push({url: ''});
 								props.setAttributes({
@@ -252,26 +264,38 @@
 						}, 'Добавить ссылку'),
 						el(Button, {
 							isPrimary: true,
+							disabled: props.attributes.isRequesting,
 							onClick: function () {
-								console.log('urls', props.attributes.urls)
 								var urls = [];
 								props.attributes.urls.forEach(function (item) {
 									urls.push(item.url);
 								});
+								isRequesting(true);
+								var url = props.attributes.carouselID ? window.gsc.rest.carouselUpdate : window.gsc.rest.carouselCreate;
 								$.ajax({
-									url: window.gsc.rest.carouselUpdate,
+									url: url,
 									method: 'POST',
 									data: {
 										urls: urls,
-										title: 'Test title',
+										title: props.attributes.carouselTitle,
 										ID: props.attributes.carouselID,
 									},
 									success: function (response) {
+										var carouselID;
+										if (!props.attributes.carouselID) {
+											props.setAttributes({
+												carouselID: response.post_id,
+											});
+											carouselID = response.post_id;
+											console.log('carouselID', carouselID);
+										} else {
+											carouselID = props.attributes.carouselID;
+										}
 										$.ajax({
 											url: window.gsc.rest.carouselGet,
 											method: 'POST',
 											data: {
-												id: props.attributes.carouselID,
+												id: carouselID,
 											},
 											success: function (data) {
 												props.setAttributes({
@@ -280,10 +304,12 @@
 												props.setAttributes({
 													content: data.content,
 												});
-												onChangeCarouselReinit();
+												carouselReinit();
+												console.log(props.attributes);
 												props.setAttributes({
 													isOpenEditModal: false,
 												});
+												isRequesting(false);
 											},
 										});
 

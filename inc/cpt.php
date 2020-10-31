@@ -55,7 +55,8 @@ function crb_attach_theme_options() {
 
 function generate_shopotam_carousel_post_content($post_id) {
 	$urls = carbon_get_post_meta( $post_id, 'urls' );
-	$content = '<div data-id="' . $post_id . '"  class="owl-theme-default owl-carousel shopotam-items-carousel">';
+	$title = get_post($post_id)->post_title;
+	$content = '<div data-title="' . $title . '" data-id="' . $post_id . '"  class="owl-theme-default owl-carousel shopotam-items-carousel">';
 	$utms = carbon_get_post_meta($post_id, 'utms');
 
 	foreach ($urls as $url) {
