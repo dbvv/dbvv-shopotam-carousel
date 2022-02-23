@@ -13,6 +13,7 @@
 	var InnerBlocks = editor.InnerBlocks;
 
 	var Button = components.Button;
+	var Checkbox = components.CheckboxControl;
 	var CustomSelectControl = components.CustomSelectControl;
 	var Dashicon = components.Dashicon;
 	var Disabled = components.Disabled;
@@ -61,10 +62,6 @@
 				selector: '.shopotam-items-carousel',
 				attribute: 'data-title',
 			},
-			isOpenEditModal: {
-				type: 'boolean',
-				default: false,
-			},
 			urls: {
 				type: 'array',
 				selector: 'a',
@@ -75,9 +72,21 @@
 						attribute: 'href',
 						source: 'attribute',
 					},
+					isCustomTitle: {
+						type: 'boolean',
+						attribute: 'data-custom',
+						source: 'attribute',
+					},
+					customTitle: {
+						type: 'string',
+						attribute: 'data-title',
+						source: 'attribute',
+					}
 				},
 				default: [
 				],
+			},
+			items: {
 			},
 			isRequesting: {
 				type: 'boolean',
@@ -169,31 +178,41 @@
 			}
 
 			function UrlsList(urls = []) {
-				function onDragStart(e) {
+				function showTitle(itemLabel, id) {
+					console.log('itemLabel', itemLabel);
+					if (itemLabel.isCustomTitle) {
+						return el(RichText, {
+							value: itemLabel.customTitle,
+							placeholder: "Новый заголовок товара",
+							onChange: function (e) {
+								let urls = props.attributes.urls;
+								urls[id].customTitle = e;
+								props.setAttributes({
+									urls: urls,
+								});
+							}
+						});
+					}
 				}
-				function onDragEnd(e) {
-				}
-
 				return urls.map(function (itemLabel, id) {
-					return el(Draggable, {
-						elementId: 'data-' + id,
-						onDragStart: onDragStart,
-						onDragEnd: onDragEnd,
-						transferData: {},
-					}, function (onDraggableStart, onDraggableEnd) {
-
-						return el('li', {
-							id: id,
-							draggable: true,
-							//onDragStart: onDraggableStart,
-							//onDragEnd: onDraggableEnd,
+					return el('li', {
+						id: id,
+						//draggable: true,
+						//onDragStart: onDraggableStart,
+						//onDragEnd: onDraggableEnd,
+						style: {
+							display: 'flex',
+							'flex-wrap': 'wrap',
+						}
+					}, [
+						el('div', {
 							style: {
 								display: 'flex',
 							}
 						}, [
 							//el(Dashicon, {
-								//icon: 'move',
-								////draggable: true,
+							//icon: 'move',
+							//draggable: true,
 							//}),
 							el(RichText, {
 								value: itemLabel.url,
@@ -211,6 +230,7 @@
 									});
 								}
 							}),
+
 							el(Button, {
 								onClick: function () {
 									if (id > -1) {
@@ -224,101 +244,117 @@
 										})
 									}
 								}
-							}, el(Dashicon, {icon: 'trash'}))
-						])
-					} )
-					;
+							}, el(Dashicon, {icon: 'trash'})),
+
+						]), // end first line div
+
+						el('div', null, [
+							el(Checkbox, {
+								value: itemLabel.isCustomTitle,
+								checked: itemLabel.isCustomTitlle,
+								label: 'Изменить заголовок',
+								onChange: function (newValue) {
+									console.log('newValue', newValue);
+									var urls = props.attributes.urls;
+									urls[id]['isCustomTitle'] =  newValue;
+									props.setAttributes({urls: []});
+									props.setAttributes({urls: urls});
+								}
+							}),
+
+							showTitle(itemLabel, id),
+						]), // end second line div
+					])
 				});
 			}
 
 			var EditModal = function (urlsList = []) {
 				var editText = props.attributes.carouselID ? 'Редактировать' : 'Создать';
-				if (props.attributes.isOpenEditModal) {
-					return el(Modal, {
-						title: editText,
-						onRequestClose: onEditModalRequestClose,
-					}, [
-						el(RichText, {
-							value: props.attributes.carouselTitle,
-							placeholder: 'Заголовок',
-							onChange: function (e) {
-								props.setAttributes({
-									carouselTitle: e
-								});
-							}
-						}),
-						el('ol', null,
-							UrlsList(urlsList),
-						),
-						el(Button, {
-							onClick: function () {
-								var urls = urlsList;
-								urls.push({url: ''});
-								props.setAttributes({
-									urls: [],
-								});
-								props.setAttributes({
+				console.log('editText', editText);
+				return el('div', null, [
+					el(RichText, {
+						value: props.attributes.carouselTitle,
+						placeholder: 'Заголовок',
+						className: 'carouselTitle',
+						onChange: function (e) {
+							props.setAttributes({
+								carouselTitle: e
+							});
+						}
+					}),
+					el('ol', {
+						className: 'urlsList'
+					},
+						UrlsList(urlsList),
+					),
+					el(Button, {
+						onClick: function () {
+							var urls = urlsList;
+							urls.push({url: ''});
+							props.setAttributes({
+								urls: [],
+							});
+							props.setAttributes({
+								urls: urls,
+							});
+						},
+					}, 'Добавить ссылку'),
+					el(Button, {
+						isPrimary: true,
+						disabled: props.attributes.isRequesting,
+						onClick: function () {
+							var urls = [];
+							props.attributes.urls.forEach(function (item) {
+								urls.push(item.url);
+							});
+							isRequesting(true);
+							var url = props.attributes.carouselID ? window.gsc.rest.carouselUpdate : window.gsc.rest.carouselCreate;
+							$.ajax({
+								url: url,
+								method: 'POST',
+								data: {
 									urls: urls,
-								});
-							},
-						}, 'Добавить ссылку'),
-						el(Button, {
-							isPrimary: true,
-							disabled: props.attributes.isRequesting,
-							onClick: function () {
-								var urls = [];
-								props.attributes.urls.forEach(function (item) {
-									urls.push(item.url);
-								});
-								isRequesting(true);
-								var url = props.attributes.carouselID ? window.gsc.rest.carouselUpdate : window.gsc.rest.carouselCreate;
-								$.ajax({
-									url: url,
-									method: 'POST',
-									data: {
-										urls: urls,
-										title: props.attributes.carouselTitle,
-										ID: props.attributes.carouselID,
-									},
-									success: function (response) {
-										var carouselID;
-										if (!props.attributes.carouselID) {
-											props.setAttributes({
-												carouselID: response.post_id,
-											});
-											carouselID = response.post_id;
-											console.log('carouselID', carouselID);
-										} else {
-											carouselID = props.attributes.carouselID;
-										}
-										$.ajax({
-											url: window.gsc.rest.carouselGet,
-											method: 'POST',
-											data: {
-												id: carouselID,
-											},
-											success: function (data) {
-												props.setAttributes({
-													content: '',
-												});
-												props.setAttributes({
-													content: data.content,
-												});
-												carouselReinit();
-												console.log(props.attributes);
-												props.setAttributes({
-													isOpenEditModal: false,
-												});
-												isRequesting(false);
-											},
+									title: props.attributes.carouselTitle,
+									ID: props.attributes.carouselID,
+								},
+								success: function (response) {
+									var carouselID;
+									if (!props.attributes.carouselID) {
+										props.setAttributes({
+											carouselID: response.post_id,
 										});
-
+										carouselID = response.post_id;
+										console.log('carouselID', carouselID);
+									} else {
+										carouselID = props.attributes.carouselID;
 									}
-								})
-							},
-						}, 'Сохранить'),
-					]);
-				}
+									$.ajax({
+										url: window.gsc.rest.carouselGet,
+										method: 'POST',
+										data: {
+											id: carouselID,
+										},
+										success: function (data) {
+											props.setAttributes({
+												content: '',
+											});
+											props.setAttributes({
+												content: data.content,
+											});
+											carouselReinit();
+											console.log(props.attributes);
+											props.setAttributes({
+												isOpenEditModal: false,
+											});
+											isRequesting(false);
+										},
+									});
+
+								}
+							})
+						},
+					}, 'Сохранить'),
+				]);
 			}
 
 			setTimeout(carouselReinit, 2000);
@@ -332,7 +368,6 @@
 					disabled: true,
 					formattingControls: [],
 				}),
-				EditModal(props.attributes.urls),
 
 				el(Button, {
 					isPrimary: true,
@@ -344,17 +379,8 @@
 					title: 'Shopotam Carousel Settings'
 				},
 					[
-						el(PanelRow, null, el(InputControl, {
-							label: 'Carousel items',
-							value: carouselItems,
-							type: 'number',
-							onChange: function (newValue) {
-								props.setAttributes({
-									carouselItems: newValue
-								});
-							}
-						})),
 						el(PanelRow, null, CarouselsSelect()),
+						el(PanelRow, null, EditModal(props.attributes.urls)),
 						,
 					],
 				))];

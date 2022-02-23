@@ -18,6 +18,10 @@ require plugin_dir_path(__FILE__) . "inc/cpt.php";
 require plugin_dir_path(__FILE__) . "inc/api.php";
 require plugin_dir_path(__FILE__) . "inc/shortcode.php";
 
+if (defined('WP_CLI') && WP_CLI) {
+	require plugin_dir_path(__FILE__) . "inc/cli-test.php";
+}
+
 add_action( 'after_setup_theme', 'crb_load' );
 function crb_load() {
     require_once( 'vendor/autoload.php' );

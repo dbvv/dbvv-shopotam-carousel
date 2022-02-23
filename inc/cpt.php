@@ -71,9 +71,21 @@ function generate_shopotam_carousel_post_content($post_id) {
 			$content .= '<div class="shopotam-carousel-item">';
 			$content .= '<a target="blank" href="' . $productLink . '">';
 			$content .= '<div class="img-wrapper">';
-			$content .= '<img src="' . $product['image'] . '"/>';
+			$image = null;
+			if (is_array($product['image'])) {
+				$image = $product['image'][0];
+			} else {
+				$image = $product['image'];
+			}
+			$content .= '<img src="' . $image . '"/>';
 			$content .= "</div>";
-			$content .= '<div class="item-brand">' . $product['brand'] . '</div>';
+			$brand = null;
+			if (is_array($product['brand'])) {
+				$brand = $product['brand']['name'];
+			} else {
+				$brand = $product['brand'];
+			}
+			$content .= '<div class="item-brand">' . $brand . '</div>';
 			$content .= '<div class="item-title">' . $product["name"] . '</div>';
 			if (isset($product['offers']) && count($product['offers']) > 0) {
 				$offer = $product['offers'][0];

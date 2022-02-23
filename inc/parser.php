@@ -20,7 +20,7 @@ class Parser {
 		}
 
 		$this->parsedData = json_decode($meta[0]->innertext, true);
-		$orderForm = $dom->find('[id="order-form"]')[0];
+		$orderForm = $dom->find('[id="order-form"]');
 		$dataVariations = $orderForm->attr['data-variations'];
 		$data = json_decode(htmlspecialchars_decode($dataVariations), true);
 		if (isset($data['combinations']) && count($data['combinations']) > 0) {

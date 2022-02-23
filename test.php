@@ -3,13 +3,12 @@ require "vendor/autoload.php";
 require 'inc/parser.php';
 
 $urls = [
-	"https://shopotam.ru/market/detyam/tovary-dlya-shkoly/elektronika-dlya-ucheby/smartfony/apple/iphone-xs-max-6-5-oled-2688x1242-a12-bionic-64gb-802-11ac-2x-12mp-7mp-face-id-ios-12-7110355.html",
-	'https://shopotam.com/odezhda-i-obuv/zhenshchinam/aksessuary/ochki/ray-ban/54mm-rounded-sunglasses-7882407.html',
+	'https://shopotam.com/kompyuternaya-tehnika/komplektuyushchie/korpusa/azza/atx-mid-tower-155-mm-atx-micro-atx-5-25-5-x-2-5-3-x-3-5-7-x-expansion-slots-2-x-120-mm-532-x-198-x-453-mm-6-3-kg-7572353.html'
 ];
 
 foreach ($urls as $url) {
 	$parser = new Parser($url);
 	$parser->parse();
 	$data = $parser->getParsedData();
-	var_dump($data);
+	dump($data);
 }

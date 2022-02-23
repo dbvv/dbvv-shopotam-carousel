@@ -8,6 +8,7 @@
 
 .shopotam-carousel-item .img-wrapper {
 	position: relative;
+	background-color: rgb(246, 246, 246);
 }
 .shopotam-carousel-item .img-wrapper:after {
 	content: '';
@@ -118,4 +119,13 @@
 	.shopotam-items-carousel .owl-stage {
 		padding-left: 0px !important;
 	}
+}
+
+.urlsList {
+	margin-left: 0px !important;
+}
+.urlsList li {
+	border: 1px solid gray;
+	margin-bottom: 15px;
+	padding: 7px;
 }
